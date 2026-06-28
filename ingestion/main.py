@@ -53,7 +53,8 @@ class ChunkResult(BaseModel):
     page: int | str
     section: str
     score: float
-
+class AnswerResponse(BaseModel):
+    answer: str
 class QueryResponse(BaseModel):
     answer: str
     chunks: list[ChunkResult]
@@ -290,7 +291,7 @@ def ingest_status(job_id: str):
     return IngestStatusResponse(job_id=job_id, **job)
 
 
-@app.post("/query", response_model=QueryResponse)
+@app.post("/query", response_model=AnswerResponse)
 def query(req: QueryRequest):
     """
     Retrieve relevant chunks from Pinecone and generate an answer via Groq.
@@ -340,9 +341,8 @@ def query(req: QueryRequest):
         ))
 
         if not chunks:
-            return QueryResponse(
-                answer="No relevant context found in the knowledge base.",
-                chunks=[]
+            return AnswerResponse(
+                answer="No relevant context found in the knowledge base."
             )
 
         # ── Build context ─────────────────────────────────────────
@@ -375,7 +375,9 @@ def query(req: QueryRequest):
         ]
 
         response = llm.invoke(messages)
-        return QueryResponse(answer=response.content)
+        return AnswerResponse(
+            answer=response.content
+        )
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
