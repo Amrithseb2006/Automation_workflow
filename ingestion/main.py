@@ -375,7 +375,7 @@ def query(req: QueryRequest):
         ]
 
         response = llm.invoke(messages)
-        return QueryResponse(answer=response.content, chunks=chunks)
+        return QueryResponse(answer=response.content)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
