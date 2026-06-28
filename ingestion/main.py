@@ -9,6 +9,9 @@ from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
+from google import genai
+from pinecone import Pinecone, ServerlessSpec
+from google.genai import types
 
 load_dotenv()
 
@@ -100,8 +103,15 @@ def _run_ingestion(job_id: str, file_path: str, use_image_captions: bool):
         # ── Step 3: Chunk ────────────────────────────────────────
         job["message"] = "Chunking documents..."
         splitter = RecursiveCharacterTextSplitter(
-            chunk_size=700,
-            chunk_overlap=120
+            chunk_size=1200,
+            chunk_overlap=200,
+            separators=[
+                "\n\n",
+                "\n",
+                ". ",
+                " ",
+                ""
+            ]
         )
         chunked_docs = []
         for doc in all_docs:
@@ -114,40 +124,83 @@ def _run_ingestion(job_id: str, file_path: str, use_image_captions: bool):
         # ── Step 4: Upsert to Pinecone ───────────────────────────
         job["message"] = "Connecting to Pinecone..."
         pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-        index_name = "medirag-dense-py"
+        client = genai.Client(
+            api_key=os.getenv("GOOGLE_API_KEY")
+        )
+        index_name = "medirag-gemini"
 
         if not pc.has_index(index_name):
-            job["message"] = "Creating Pinecone index..."
-            pc.create_index_for_model(
+
+            job["message"] = "Creating Pinecone Index..."
+
+            pc.create_index(
+
                 name=index_name,
-                cloud="aws",
-                region="us-east-1",
-                embed={
-                    "model": "llama-text-embed-v2",
-                    "field_map": {"text": "text"}
-                }
+
+                dimension=3072,
+
+                metric="cosine",
+
+                spec=ServerlessSpec(
+                    cloud="aws",
+                    region="us-east-1"
+                )
             )
 
         index = pc.Index(index_name)
 
         records = []
+
         for doc in chunked_docs:
+
+            embedding = client.models.embed_content(
+
+                model="gemini-embedding-001",
+
+                contents=doc["text"],
+
+                config=types.EmbedContentConfig(
+                    task_type="RETRIEVAL_DOCUMENT"
+                )
+
+            )
+
+            vector = embedding.embeddings[0].values
+
             meta = doc["metadata"]
+
             records.append({
-                "_id":     str(uuid.uuid4()),
-                "text":    doc["text"],
-                "doc_id":  str(meta.get("doc_id", "")),
-                "page":    int(meta.get("page", 0)),
-                "section": str(meta.get("section", "")),
-                "source":  str(meta.get("source", "")),
-                "type":    str(meta.get("type", "")),
+
+                "id": str(uuid.uuid4()),
+
+                "values": vector,
+
+                "metadata": {
+
+                    "text": doc["text"],
+
+                    "doc_id": str(meta.get("doc_id","")),
+
+                    "page": int(meta.get("page",0)),
+
+                    "section": str(meta.get("section","")),
+
+                    "source": str(meta.get("source","")),
+
+                    "type": str(meta.get("type",""))
+
+                }
+
             })
 
         batch_size = 50
         for i in range(0, len(records), batch_size):
-            index.upsert_records(
-                namespace="example-namespace",
-                records=records[i:i + batch_size]
+            index.upsert(
+
+                vectors=records[i:i+batch_size],
+
+                namespace="example-namespace"
+
             )
             job["processed"] = min(i + batch_size, len(records))
             job["message"] = f"Upserted {job['processed']}/{len(records)} chunks..."
@@ -179,7 +232,7 @@ def clear_index():
         from pinecone import Pinecone
         pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 
-        index = pc.Index("medirag-dense-py")  
+        index = pc.Index("medirag-gemini")  
         index.delete(delete_all=True, namespace="example-namespace")  
 
         return {"status": "ok", "message": "Index cleared."}
@@ -252,26 +305,39 @@ def query(req: QueryRequest):
 
         # ── Retrieve ─────────────────────────────────────────────
         pc    = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-        index = pc.Index("medirag-dense-py")
+        index = pc.Index("medirag-gemini")
 
-        results = index.search(
-            namespace="example-namespace",
-            query={
-                "inputs": {"text": req.query},
-                "top_k":  req.top_k,
-            }
+        client = genai.Client(
+            api_key=os.getenv("GOOGLE_API_KEY")
+        )
+
+        embedding = client.models.embed_content(
+            model="gemini-embedding-001",
+            contents=req.query,
+            config=types.EmbedContentConfig(
+                task_type="RETRIEVAL_QUERY"
+            )
+        )
+
+        query_vector = embedding.embeddings[0].values
+
+        results = index.query(
+            vector=query_vector,
+            top_k=10,
+            include_metadata=True,
+            namespace="example-namespace"
         )
 
         chunks = []
-        for match in results["result"]["hits"]:
-            f = match["fields"]
+        for match in results.matches:
+            meta = match.metadata
             chunks.append(ChunkResult(
-                text    = f.get("text", ""),
-                source  = f.get("source", ""),
-                page    = f.get("page", ""),
-                section = f.get("section", ""),
-                score   = match["_score"],
-            ))
+            text=meta.get("text",""),
+            source=meta.get("source",""),
+            page=meta.get("page",""),
+            section=meta.get("section",""),
+            score=match.score
+        ))
 
         if not chunks:
             return QueryResponse(
@@ -297,9 +363,13 @@ def query(req: QueryRequest):
 
         messages = [
             SystemMessage(content=(
-                "You are a medical RAG assistant. Answer the user's question using ONLY "
-                "the provided context chunks. If the context doesn't contain enough information, "
-                "say so clearly. Always mention which source/page your answer comes from."
+                "You are an educational institution RAG assistant."
+
+                "Answer ONLY using the retrieved context."
+                "If the information is unavailable in the retrieved context,"
+                "clearly say that."
+
+                "Always mention the source document and page number if available."
             )),
             HumanMessage(content=f"Context:\n{context}\n\nQuestion: {req.query}"),
         ]
