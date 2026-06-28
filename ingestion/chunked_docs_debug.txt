@@ -1,0 +1,2004 @@
+================================================================================
+Chunk 1
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 1, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SCHOOL OF ENGINEERING 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+DEPARTMENT OF COMPUTER SCIENCE AND 
+ENGINEERING 
+ 
+ 
+Bachelor of Technology  
+Computer Science and Engineering (Internet of Things) 
+ 
+CURRICULUM 
+ 
+REGULATION 2025
+
+================================================================================
+Chunk 2
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 2, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+ 
+PROGRAM EDUCATIONAL OBJECTIVES (PEOs)  
+ 
+PEO 1: Graduates will excel in professional roles within the expanding field of Internet 
+of Things, contributing to the design, development, and deployment of innovative IoT 
+solutions.  
+  
+PEO 2: Graduates will possess the expertise to engineer comprehensive IoT systems, 
+integrating diverse devices, networks, and data management techniques to address real-
+world challenges.  
+  
+PEO 3: Graduates will be capable of leveraging data acquired from IoT devices, 
+applying analytics and machine learning to derive actionable insights, and optimizing IoT 
+applications for enhanced performance and decision-making.  
+  
+PEO 4: Graduates will design and implement IoT solutions with a strong emphasis on 
+security, privacy, and ethical considerations, ensuring responsible and sustainable 
+technological advancements.
+
+================================================================================
+Chunk 3
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 2, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+security, privacy, and ethical considerations, ensuring responsible and sustainable 
+technological advancements.  
+  
+PROGRAM OUTCOMES (POs) 
+  
+PO1: Engineering Knowledge: Apply knowledge of mathematics, natural science, 
+computing, engineering fundamentals and an engineering specialization to develop to the 
+solution of complex engineering problems.  
+ 
+PO2: Problem Analysis: Identify, formulate, review research literature and analyze 
+complex engineering problems reaching substantiated conclusions with consideration for 
+sustainable development. 
+ 
+PO3: Design/Development of Solutions: Design creative solutions for complex 
+engineering problems and design/develop systems/components/processes to meet 
+identified needs with consideration for the public health and safety, whole-life cost, net 
+zero carbon, culture, society and environment as required.  
+ 
+PO4: Conduct Investigations of Complex Problems: Conduct investigations of
+
+================================================================================
+Chunk 4
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 2, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+zero carbon, culture, society and environment as required.  
+ 
+PO4: Conduct Investigations of Complex Problems: Conduct investigations of 
+complex engineering problems using research-based knowledge including design of 
+experiments, modelling, analysis & interpretation of data to provide valid conclusions.
+
+================================================================================
+Chunk 5
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 3, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+PO5: Engineering Tool Usage: Create, select and apply appropriate techniques, 
+resources and modern engineering & IT tools, including prediction and modelling 
+recognizing their limitations to solve complex engineering problems. 
+ 
+PO6: The Engineer and The World: Analyze and evaluate societal and environmental 
+aspects while solving complex engineering problems for its impact on sustainability with 
+reference to economy, health, safety, legal framework, culture and environment.  
+ 
+PO7: Ethics: Apply ethical principles and commit to professional ethics, human values, 
+diversity and inclusion; adhere to national & international laws.  
+ 
+PO8: Individual and Collaborative Team work: Function effectively as an individual, 
+and as a member or leader in diverse/multi-disciplinary teams.
+
+================================================================================
+Chunk 6
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 3, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+PO8: Individual and Collaborative Team work: Function effectively as an individual, 
+and as a member or leader in diverse/multi-disciplinary teams.  
+ 
+PO9: Communication: Communicate effectively and inclusively within the engineering 
+community and society at large, such as being able to comprehend and write effective 
+reports and design documentation, make effective presentations considering cultural, 
+language, and learning differences.  
+ 
+PO10: Project Management and Finance: Apply knowledge and understanding of 
+engineering management principles and economic decision-making and apply these to 
+one’s own work, as a member and leader in a team, and to manage projects and in 
+multidisciplinary environments.  
+ 
+PO11: Life-Long Learning: Recognize the need for, and have the preparation and 
+ability for i) independent and life-long learning ii) adaptability to new and emerging 
+technologies and iii) critical thinking in the broadest context of technological change.
+
+================================================================================
+Chunk 7
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 3, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+ability for i) independent and life-long learning ii) adaptability to new and emerging 
+technologies and iii) critical thinking in the broadest context of technological change.  
+ 
+PROGRAM SPECIFIC OUTCOMES (PSOs)  
+  
+PSO 1: IoT Systems Development: Graduates will be able to design, develop, and 
+deploy complete IoT systems, including device selection, sensor integration, network 
+configuration, and application development, considering factors like scalability, security, 
+and reliability.  
+  
+PSO 2: Data Acquisition and Analysis for IoT: Graduates will be able to implement 
+data acquisition, storage, and processing solutions for IoT applications, and apply data 
+analytics and machine learning techniques to extract meaningful insights for informed 
+decision-making.
+
+================================================================================
+Chunk 8
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 4, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+PSO 3: IoT Security and Privacy: Graduates will be able to analyze security and 
+privacy requirements in IoT deployments and implement appropriate security measures, 
+including authentication, authorization, encryption, and vulnerability mitigation, to 
+protect IoT systems and data.  
+ 
+COURSE SUMMARY 
+The listed courses in the curriculum are broadly classified as per the recommendations from the 
+UGC.  
+  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+The semester wise credit breakup of the Curriculum based on the above credit breakup proposed 
+by the UGC is as follows: 
+ 
+Semester\Category 
+MC 
+MS 
+MD 
+AEC 
+SEC 
+VAC 
+SI 
+PD 
+TOTAL 
+1 
+11 
+- 
+9 
+3 
+- 
+1 
+- 
+- 
+24 
+2 
+16 
+- 
+- 
+3 
+2 
+1 
+- 
+- 
+22 
+3 
+11 
+8 
+- 
+- 
+2 
+2 
+- 
+- 
+23 
+4 
+10 
+5 
+- 
+- 
+4 
+- 
+- 
+- 
+19 
+5 
+11 
+6 
+- 
+3 
+1 
+- 
+- 
+- 
+21 
+6 
+11 
+6 
+- 
+- 
+- 
+- 
+1 
+4 
+22 
+7 
+10 
+5 
+- 
+- 
+- 
+- 
+- 
+6 
+21 
+8 
+- 
+2 
+- 
+- 
+- 
+4 
+- 
+2
+
+================================================================================
+Chunk 9
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 4, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+1 
+- 
+- 
+22 
+3 
+11 
+8 
+- 
+- 
+2 
+2 
+- 
+- 
+23 
+4 
+10 
+5 
+- 
+- 
+4 
+- 
+- 
+- 
+19 
+5 
+11 
+6 
+- 
+3 
+1 
+- 
+- 
+- 
+21 
+6 
+11 
+6 
+- 
+- 
+- 
+- 
+1 
+4 
+22 
+7 
+10 
+5 
+- 
+- 
+- 
+- 
+- 
+6 
+21 
+8 
+- 
+2 
+- 
+- 
+- 
+4 
+- 
+2 
+8 
+Total 
+80 
+32 
+9 
+9 
+9 
+8 
+1 
+12 
+160 
+ 
+Sl. 
+No 
+Broad Category of Course 
+Minimum Credit Requirement 
+1 
+Major Core (MC) 
+80 
+2 
+Minor Stream (MS) 
+32 
+3 
+Multidisciplinary (MD) 
+09 
+4 
+Ability Enhancement Course (AEC) 
+08 
+5 
+Skill Enhancement Course (SEC) 
+09 
+6 
+Value Added Courses (VAC) 
+06-08 
+7 
+Summer Internship (SI) 
+02-04 
+8 
+Project Dissertation (PD) 
+12 
+Total 
+160
+
+================================================================================
+Chunk 10
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 5, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+SEMESTER I 
+ 
+Sl. 
+No. 
+Course Title 
+Course 
+Category 
+Contact 
+Periods 
+L 
+T 
+P 
+C 
+1 
+Communicative English 
+AEC 
+3 
+2 
+1 
+0 
+3 
+2 
+Mathematics I 
+MD 
+4 
+3 
+1 
+0 
+4 
+3 
+Problem Solving and Programming in C + 
+LAB 
+MC 
+5 
+2 
+1 
+2 
+4 
+4 
+Digital Design + Lab 
+MC 
+4 
+2 
+0 
+2 
+3 
+5 
+Basic Electrical and Electronics Engineering + 
+Lab 
+MC 
+5 
+3 
+0 
+2 
+4 
+6 
+Engineering Physics 
+MD 
+3 
+3 
+0 
+0 
+3 
+7 
+Engineering Physics Lab 
+MD 
+4 
+0 
+0 
+4 
+2 
+8 
+Extra Academic Activity 1 
+VAC 
+2 
+0 
+0 
+0 
+1 
+Total 
+26 
+15 
+3 
+6 
+22 
+ 
+SEMESTER II 
+ 
+Sl. 
+No. 
+Course Title 
+Course 
+Category 
+Contact 
+Periods 
+L 
+T 
+P 
+C 
+1 
+English for Engineers 
+AEC 
+3 
+2 
+1 
+0 
+3 
+2 
+Mathematics II 
+MC 
+3 
+3 
+0 
+0 
+3 
+3 
+Data Structures + Lab 
+MC 
+5 
+2 
+1 
+2 
+4 
+4 
+Computer Organization and Architecture 
+MC 
+3 
+3 
+0 
+0 
+3 
+5 
+Object Oriented Programming + Lab  
+MC 
+4 
+2 
+0 
+2 
+3 
+6
+
+================================================================================
+Chunk 11
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 5, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+MC 
+3 
+3 
+0 
+0 
+3 
+3 
+Data Structures + Lab 
+MC 
+5 
+2 
+1 
+2 
+4 
+4 
+Computer Organization and Architecture 
+MC 
+3 
+3 
+0 
+0 
+3 
+5 
+Object Oriented Programming + Lab  
+MC 
+4 
+2 
+0 
+2 
+3 
+6 
+Discrete Mathematics 
+MC 
+3 
+3 
+0 
+0 
+3 
+7 
+Microprocessor and Microcontroller Lab  
+SEC 
+3 
+0 
+1 
+2 
+2 
+8 
+Extra Academic Activity 2# 
+VAC 
+2 
+0 
+0 
+0 
+1 
+ 
+ 
+Total 
+30 
+15 
+3 
+10 
+24 
+#Note: At the induction programme, students will have the option to choose from three youth 
+programmes: the National Service Scheme (NSS), the Youth Red Cross Society (YRCS), and the 
+National Sports Organisation (NSO). The grades earned by students will be included in the mark 
+statement; however, these grades will not contribute to the calculation of the CGPA.
+
+================================================================================
+Chunk 12
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 6, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+SEMESTER III 
+ 
+Sl. 
+No. 
+Course Title 
+Course 
+Category 
+Contact 
+Periods 
+L 
+T 
+P 
+C 
+1 
+Design and Analysis of Algorithms + Lab 
+MC 
+5 
+3 
+0 
+2 
+4 
+2 
+Fundamentals of Internet of Things + Lab 
+MC 
+5 
+2 
+1 
+2 
+4 
+3 
+Theory of Computation 
+MS 
+3 
+3 
+0 
+0 
+3 
+4 
+Operating Systems + Lab 
+MC 
+4 
+2 
+0 
+2 
+3 
+5 
+Linear Algebra for Computer Technologists 
+MS 
+3 
+2 
+1 
+0 
+3 
+6 
+JAVA Programming 
+MS 
+2 
+2 
+0 
+0 
+2 
+7 
+Environmental Science and Engineering 
+VAC 
+2 
+2 
+0 
+0 
+2 
+8 
+JAVA Programming LAB 
+SEC 
+3 
+0 
+1 
+2 
+2 
+Total 
+27 
+16 
+3 
+8 
+23 
+ 
+ 
+SEMESTER IV 
+ 
+ 
+Sl. 
+No. 
+Course Title 
+Course 
+Category 
+Contact 
+Periods 
+L 
+T 
+P 
+C 
+1 
+Computer Networks + LAB 
+MS 
+4 
+2 
+0 
+2 
+3 
+2 
+Database Management Systems + LAB 
+MC 
+4 
+2 
+0 
+2 
+3 
+3 
+IoT Architecture & Programming + Lab 
+MC 
+5 
+2 
+1 
+2 
+4 
+4 
+Machine Learning Algorithms + Lab 
+MC 
+4 
+2 
+0 
+2 
+3 
+5
+
+================================================================================
+Chunk 13
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 6, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+MS 
+4 
+2 
+0 
+2 
+3 
+2 
+Database Management Systems + LAB 
+MC 
+4 
+2 
+0 
+2 
+3 
+3 
+IoT Architecture & Programming + Lab 
+MC 
+5 
+2 
+1 
+2 
+4 
+4 
+Machine Learning Algorithms + Lab 
+MC 
+4 
+2 
+0 
+2 
+3 
+5 
+Full Stack Web Technologies 
+MS 
+2 
+2 
+0 
+0 
+2 
+6 
+Full Stack Web Technologies LAB 
+SEC 
+3 
+0 
+1 
+2 
+2 
+7 
+Mini Project   
+SEC 
+3 
+0 
+1 
+2 
+2 
+Total 
+25 
+10 
+3 
+12 
+19
+
+================================================================================
+Chunk 14
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 7, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+SEMESTER V 
+ 
+Sl. 
+No. 
+Course Title 
+Course 
+Category 
+Contact 
+Periods 
+L 
+T 
+P 
+C 
+1 
+Distributed Systems + Lab  
+MC 
+5 
+2 
+1 
+2 
+4 
+2 
+Wireless Communication Techniques + Lab 
+MC 
+5 
+2 
+1 
+2 
+4 
+3 
+Signal Processing for IoT + Lab   
+MC 
+4 
+2 
+0 
+2 
+3 
+4 
+MINOR STREAM COURSE 1 
+MS 
+3 
+3 
+0 
+0 
+3 
+5 
+MINOR STREAM COURSE 2 
+MS 
+3 
+3 
+0 
+0 
+3 
+6 
+Ability Enhancement Course Basket# 
+AEC 
+3 
+3 
+0 
+0 
+3 
+7 
+Tools for Big Data Analytics 
+SEC 
+2 
+0 
+0 
+2 
+1 
+Total 
+25 
+15 
+2 
+8 
+21 
+#The following is a tentative list of courses that may be offered under the Ability Enhancement 
+Course Basket: 
+1. Linguistics 
+2. Mass Communication 
+3. Academic Writing 
+ 
+SEMESTER VI 
+ 
+Sl. 
+No. 
+Course Title 
+Course 
+Category 
+Contact 
+Periods 
+L 
+T 
+P 
+C 
+1 
+Foundation of Robotics + Lab 
+MC 
+5 
+2 
+1 
+2 
+4 
+2 
+Cloud IoT Analytics + Lab 
+MC 
+5 
+2 
+1 
+2 
+4 
+3 
+Software Engineering 
+MC
+
+================================================================================
+Chunk 15
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 7, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+No. 
+Course Title 
+Course 
+Category 
+Contact 
+Periods 
+L 
+T 
+P 
+C 
+1 
+Foundation of Robotics + Lab 
+MC 
+5 
+2 
+1 
+2 
+4 
+2 
+Cloud IoT Analytics + Lab 
+MC 
+5 
+2 
+1 
+2 
+4 
+3 
+Software Engineering 
+MC 
+3 
+3 
+0 
+0 
+3 
+4 
+MINOR STREAM COURSE 3 
+MS 
+3 
+3 
+0 
+0 
+3 
+5 
+MINOR STREAM BASKET 1 
+MS 
+3 
+3 
+0 
+0 
+3 
+6 
+Capstone Project Phase 1  
+PD 
+8 
+0 
+0 
+8 
+4 
+7 
+Industrial Training/Internship 
+SI 
+2 
+0 
+0 
+2 
+1 
+Total 
+29 
+13 
+2 
+14 
+22
+
+================================================================================
+Chunk 16
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 8, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+SEMESTER VII 
+ 
+Sl. 
+No. 
+Course Title 
+Course 
+Category 
+Contact 
+Periods 
+L 
+T 
+P 
+C 
+1 
+Edge Intelligence + Lab 
+MC 
+5 
+2 
+1 
+2 
+4 
+2 
+IoT Security Essentials 
+MC 
+3 
+3 
+0 
+0 
+3 
+3 
+Compiler Design 
+MC 
+3 
+3 
+0 
+0 
+3 
+4 
+MINOR STREAM BASKET 2 
+MS 
+3 
+3 
+0 
+0 
+3 
+5 
+MINOR STREAM BASKET 3 
+MS 
+2 
+2 
+0 
+0 
+2 
+6 
+Capstone Project Phase 2 
+PD 
+12 
+0 
+0 
+12 
+6 
+Total 
+28 
+13 
+1 
+14 
+21 
+ 
+ 
+ 
+SEMESTER VIII 
+ 
+Sl. 
+No. 
+Course Title 
+Course 
+Category 
+Contact 
+Periods 
+L 
+T 
+P 
+C 
+1 
+Professional Ethics and Human Values 
+VAC 
+2 
+2 
+0 
+0 
+2 
+2 
+Value Added Course Basket# 
+VAC 
+2 
+2 
+0 
+0 
+2 
+3 
+MINOR STREAM BASKET 4 
+MS 
+2 
+2 
+0 
+0 
+2 
+4 
+Capstone Project Phase 3  
+PD 
+4 
+0 
+0 
+4 
+2 
+Total 
+10 
+6 
+0 
+4 
+8 
+#The following is a tentative list of courses that may be offered under the Value-Added Course 
+Basket: 
+1. Entrepreneurship Essentials 
+2. Green Computing
+
+================================================================================
+Chunk 17
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 8, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+PD 
+4 
+0 
+0 
+4 
+2 
+Total 
+10 
+6 
+0 
+4 
+8 
+#The following is a tentative list of courses that may be offered under the Value-Added Course 
+Basket: 
+1. Entrepreneurship Essentials 
+2. Green Computing 
+3. Water Resource Management
+
+================================================================================
+Chunk 18
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 9, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+ 
+MINOR STREAMS 
+ 
+The Department of Computer Science and Engineering offers its students the following list of 
+Minor Streams. 
+1. Foundations of AI and Data Science 
+2. Foundations of Internet of Things 
+3. Foundations of Cybersecurity 
+4. Machine Intelligence (Advanced AI and DS) 
+5. Cyber Physical Systems (Advanced IoT) 
+6. Advanced Cybersecurity  
+ Each Minor Stream has seven courses worth 19 credits. The student must enroll in any one of 
+the above six Minor Streams. Minor Streams tagged with Foundations must not be enrolled by 
+students whose Major Core courses overlap with the listed courses in the Minor Stream.
+
+================================================================================
+Chunk 19
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 10, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+MINOR STREAM 1 - Foundations of AI and Data Science 
+ 
+Sl. 
+No. 
+Course Title 
+Semester 
+Contact 
+Hours 
+L 
+T 
+P 
+C 
+1 
+Data Analysis through Statistical 
+Inference*^ 
+5 
+4 
+2 
+0 
+2 
+3 
+2 
+Deep Learning* 
+5 
+6 
+2 
+1 
+0 
+3 
+3 
+Data Mining and Data Warehousing + 
+LAB#*  
+6 
+5 
+2 
+0 
+2 
+3 
+4 
+MINOR STREAM BASKET 1 
+6 
+3 
+3 
+0 
+0 
+3 
+5 
+MINOR STREAM BASKET 2 
+7 
+3 
+3 
+0 
+0 
+3 
+6 
+MINOR STREAM BASKET 3 
+7 
+3 
+3 
+0 
+0 
+2 
+7 
+MINOR STREAM BASKET 4 
+8 
+4 
+2 
+0 
+0 
+2 
+*Mandatory Course for the Minor Stream 1 
+^Mandatory Course for the Minor Stream 3 
+ 
+The following is the tentative list of courses that may be offered under the Minor Stream 
+Baskets: 
+Minor Stream Basket 1 
+(3 Credit courses) 
+Minor Stream Basket 2 
+(3 Credit courses) 
+Minor Stream Basket 3 
+(2 Credit courses) 
+Minor Stream Basket 4 
+(2 Credit courses) 
+Natural Language 
+Processing#  
+Data Preprocessing#
+
+================================================================================
+Chunk 20
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 10, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+Minor Stream Basket 2 
+(3 Credit courses) 
+Minor Stream Basket 3 
+(2 Credit courses) 
+Minor Stream Basket 4 
+(2 Credit courses) 
+Natural Language 
+Processing#  
+Data Preprocessing# 
+Machine Learning 
+Operations (MLOps) 
+Speech Analytics 
+Reinforcement 
+Learning# 
+Predictive Analytics# 
+Multi-Agent Systems 
+Video Analytics 
+GPU Programming for 
+AI 
+Graph Machine 
+Learning# 
+Edge Computing 
+Financial Data Analytics 
+Recommendation 
+Systems 
+AI Ethics, Safety, and 
+Explainability# 
+ 
+ 
+Optimization 
+Techniques for 
+Machine Learning 
+Soft Computing 
+ 
+ 
+#These courses are part of the Major Core courses for B.Tech. Artificial Intelligence and Data 
+Science. 
+ 
+Note: Students from B.Tech. AI and DS must not opt for this Minor Stream.
+
+================================================================================
+Chunk 21
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 11, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+MINOR STREAM 2 - Foundations of Internet of Things 
+ 
+Sl. 
+No. 
+Course Title 
+Semester 
+Contact 
+Hours 
+L 
+T 
+P 
+C 
+1 
+Fundamentals of Embedded Systems* 
+5 
+3 
+2 
+1 
+0 
+3 
+2 
+Fundamentals of Internet of Things* 
+5 
+3 
+2 
+1 
+0 
+3 
+3 
+IoT Architecture & Programming* 
+6 
+3 
+2 
+1 
+0 
+3 
+4 
+MINOR STREAM BASKET 1 
+6 
+3 
+3 
+0 
+0 
+3 
+5 
+MINOR STREAM BASKET 2 
+7 
+3 
+3 
+0 
+0 
+3 
+6 
+MINOR STREAM BASKET 3 
+7 
+2 
+2 
+0 
+0 
+2 
+7 
+MINOR STREAM BASKET 4 
+8 
+2 
+2 
+0 
+0 
+2 
+*Mandatory courses for the Minor Stream 2 
+ 
+The following is the tentative list of courses that may be offered under the Minor Stream 
+Baskets: 
+Minor Stream Basket 1 
+(3 Credit courses) 
+Minor Stream Basket 2 
+(3 Credit courses) 
+Minor Stream Basket 3 
+(2 Credit courses) 
+Minor Stream Basket 4 
+(2 Credit courses) 
+Foundations of 
+Robotics#  
+Wireless Communication 
+Techniques# 
+Wheeled Mobile Robots
+
+================================================================================
+Chunk 22
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 11, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+(3 Credit courses) 
+Minor Stream Basket 3 
+(2 Credit courses) 
+Minor Stream Basket 4 
+(2 Credit courses) 
+Foundations of 
+Robotics#  
+Wireless Communication 
+Techniques# 
+Wheeled Mobile Robots 
+Industry IoT 4.0 
+Cloud Analytics for 
+IoT# 
+Signal Processing for 
+IoT# 
+Smart Power Grids 
+Micro and Smart systems 
+Programming Edge 
+Accelerators 
+Edge Intelligence# 
+Wireless Ad Hoc and 
+Sensor Network 
+Affective Computing 
+Embedded Interface 
+Design (HCI) 
+IoT Security Essentials# 
+ 
+ 
+Embedded Vision 
+Wearable Technology 
+ 
+ 
+#These courses are part of the Major Core courses for B.Tech. Computer Science and 
+Engineering (Internet of Things) 
+ 
+ 
+Note: Students from B.Tech. CSE (IoT) must not opt for this Minor Stream.
+
+================================================================================
+Chunk 23
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 12, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+MINOR STREAM 3 – Foundations of Cybersecurity 
+ 
+Sl. 
+No. 
+Course Title 
+Semester 
+Contact 
+Hours 
+L 
+T 
+P 
+C 
+1 
+Foundations of Cybersecurity#* 
+5 
+4 
+2 
+0 
+2 
+3 
+2 
+Digital Forensics#* 
+5 
+3 
+3 
+0 
+0 
+3 
+3 
+Vulnerability Assessment and 
+Penetration Testing#* 
+6 
+3 
+3 
+0 
+0 
+3 
+4 
+MINOR STREAM BASKET 1 
+6 
+3 
+3 
+0 
+0 
+3 
+5 
+MINOR STREAM BASKET 2 
+7 
+3 
+3 
+0 
+0 
+3 
+6 
+MINOR STREAM BASKET 3 
+7 
+3 
+2 
+0 
+0 
+2 
+7 
+MINOR STREAM BASKET 4 
+8 
+2 
+2 
+0 
+0 
+2 
+*Mandatory courses for the Minor Stream 3 
+ 
+The following is the tentative list of courses that may be offered under the Minor Stream 
+Baskets: 
+Minor Stream Basket 1 
+(3 Credit courses) 
+Minor Stream Basket 2 
+(3 Credit courses) 
+Minor Stream Basket 3 
+(2 Credit courses) 
+Minor Stream Basket 4 
+(2 Credit courses) 
+Malware Analysis and 
+Reverse Engineering#  
+Modern Cryptography# 
+Infrastructure Security
+
+================================================================================
+Chunk 24
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 12, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+(3 Credit courses) 
+Minor Stream Basket 3 
+(2 Credit courses) 
+Minor Stream Basket 4 
+(2 Credit courses) 
+Malware Analysis and 
+Reverse Engineering#  
+Modern Cryptography# 
+Infrastructure Security 
+Financial Data Analytics 
+Embedded Systems and 
+Security# 
+Network and Information 
+Security # 
+Incidence Response 
+Open Source Intelligence 
+Programming Edge 
+Accelerators 
+Cloud Computing and 
+Security# 
+Wireless Ad Hoc and 
+Sensor Network 
+Affective Computing 
+Cyber Laws and Ethics 
+Blockchain Technology# 
+DevSecOps 
+ 
+Fault Tolerant Systems 
+Federated Learning 
+ 
+ 
+#These courses are part of the Major Core courses for B.Tech. Computer Science and 
+Engineering (Cybersecurity) 
+ 
+Note: Students from B.Tech. CSE (Cybersecurity) must not opt for this Minor Stream.
+
+================================================================================
+Chunk 25
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 13, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+MINOR STREAM 4 - Machine Intelligence 
+(Advanced AI and Data Science) 
+ 
+Sl. 
+No. 
+Course Title 
+Semester 
+Contact 
+Hours 
+L 
+T 
+P 
+C 
+1 
+Data Analysis through Statistical 
+Inference* 
+5 
+4 
+2 
+0 
+2 
+3 
+2 
+Optimization Techniques for Machine 
+Learning* 
+5 
+3 
+3 
+0 
+0 
+3 
+3 
+Deep generative models* 
+6 
+3 
+3 
+0 
+0 
+3 
+4 
+MINOR STREAM BASKET 1 
+6 
+3 
+3 
+0 
+0 
+3 
+5 
+MINOR STREAM BASKET 2 
+7 
+3 
+3 
+0 
+0 
+3 
+6 
+MINOR STREAM BASKET 3 
+7 
+2 
+2 
+0 
+0 
+2 
+7 
+MINOR STREAM BASKET 4 
+8 
+2 
+2 
+0 
+0 
+2 
+*Mandatory Course for the Minor Stream 4 
+ 
+The following is the tentative list of courses that may be offered under the Minor Stream 
+Baskets: 
+ 
+ 
+ 
+ 
+Minor Stream Basket 1 
+(3 Credit courses) 
+Minor Stream Basket 2 
+(3 Credit courses) 
+Minor Stream Basket 3 
+(2 Credit courses) 
+Minor Stream Basket 4 
+(2 Credit courses) 
+Tensor Computations of 
+AI 
+Social Network Analysis
+
+================================================================================
+Chunk 26
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 13, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+Minor Stream Basket 2 
+(3 Credit courses) 
+Minor Stream Basket 3 
+(2 Credit courses) 
+Minor Stream Basket 4 
+(2 Credit courses) 
+Tensor Computations of 
+AI 
+Social Network Analysis 
+Machine Learning 
+Operations (MLOps) 
+Speech Analytics 
+GPU Programming for 
+AI 
+Human Computer 
+Interactions and AI 
+Multi-Agent Systems 
+Video Analytics 
+Evolutionary 
+Computing 
+Soft Computing 
+Edge Computing 
+Financial Data Analytics 
+Advanced Control 
+Theory 
+Foundation of Robotics 
+ 
+ 
+Affective Computing 
+Federated Learning
+
+================================================================================
+Chunk 27
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 14, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+MINOR STREAM 5 - Cyber Physical Systems  
+(Advanced IoT) 
+ 
+Sl. 
+No. 
+Course Title 
+Semester 
+Contact 
+Hours 
+L 
+T 
+P 
+C 
+1 
+Modern Control Theory* 
+5 
+3 
+3 
+0 
+0 
+3 
+2 
+Embedded RTOS* 
+5 
+4 
+2 
+0 
+2 
+3 
+3 
+Programmable Logic Embedded 
+System Design* 
+6 
+4 
+2 
+0 
+2 
+3 
+4 
+MINOR STREAM BASKET 1 
+6 
+3 
+3 
+0 
+0 
+3 
+5 
+MINOR STREAM BASKET 2 
+7 
+3 
+3 
+0 
+0 
+3 
+6 
+MINOR STREAM BASKET 3 
+7 
+2 
+2 
+0 
+0 
+2 
+7 
+MINOR STREAM BASKET 4 
+8 
+2 
+2 
+0 
+0 
+2 
+*Mandatory courses for the Minor Stream 5 
+ 
+The following is the tentative list of courses that may be offered under the Minor Stream 
+Baskets: 
+Minor Stream Basket 1 
+(3 Credit courses) 
+Minor Stream Basket 2 
+(3 Credit courses) 
+Minor Stream Basket 3 
+(2 Credit courses) 
+Minor Stream Basket 4 
+(2 Credit courses) 
+IoT Embedded 
+Firmware 
+Wearable Technology 
+Wheeled Mobile Robots 
+Industry IoT 4.0 
+Programming Edge
+
+================================================================================
+Chunk 28
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 14, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+Minor Stream Basket 3 
+(2 Credit courses) 
+Minor Stream Basket 4 
+(2 Credit courses) 
+IoT Embedded 
+Firmware 
+Wearable Technology 
+Wheeled Mobile Robots 
+Industry IoT 4.0 
+Programming Edge 
+Accelerators 
+Drone Technology 
+Smart Power Grids 
+Micro and Smart systems 
+Embedded Interface 
+Design (HCI) 
+Automotive IoT 
+Wireless Ad Hoc and 
+Sensor Network 
+Affective Computing 
+Embedded Vision 
+Federated Learning
+
+================================================================================
+Chunk 29
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 15, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+MINOR STREAM 6 - Advanced Cybersecurity 
+ 
+Sl. 
+No. 
+Course Title 
+Semester 
+Contact 
+Hours 
+L 
+T 
+P 
+C 
+1 
+Privacy Engineering* 
+5 
+4 
+2 
+0 
+2 
+3 
+2 
+Cyber Physical Systems* 
+5 
+3 
+3 
+0 
+0 
+3 
+3 
+Fault Tolerant Systems* 
+6 
+3 
+3 
+0 
+0 
+3 
+4 
+MINOR STREAM BASKET 1 
+6 
+3 
+3 
+0 
+0 
+3 
+5 
+MINOR STREAM BASKET 2 
+7 
+3 
+3 
+0 
+0 
+3 
+6 
+MINOR STREAM BASKET 3 
+7 
+3 
+2 
+0 
+0 
+2 
+7 
+MINOR STREAM BASKET 4 
+8 
+2 
+2 
+0 
+0 
+2 
+*Mandatory courses for the Minor Stream 6 
+ 
+The following is the tentative list of courses that may be offered under the Minor Stream 
+Baskets: 
+Minor Stream Basket 1 
+(3 Credit courses) 
+Minor Stream Basket 2 
+(3 Credit courses) 
+Minor Stream Basket 3 
+(2 Credit courses) 
+Minor Stream Basket 4 
+(2 Credit courses) 
+Social Media Analysis 
+and Security 
+Quantum Cryptography 
+Infrastructure Security 
+Financial Data Analytics 
+High Performance 
+Computing and
+
+================================================================================
+Chunk 30
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 15, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+Minor Stream Basket 4 
+(2 Credit courses) 
+Social Media Analysis 
+and Security 
+Quantum Cryptography 
+Infrastructure Security 
+Financial Data Analytics 
+High Performance 
+Computing and 
+Security 
+Federated Learning 
+Incidence Response 
+Open Source Intelligence 
+Cyber Laws and Ethics 
+Wireless security 
+SecOps 
+Affective Computing 
+Fault Tolerant Systems 
+Risk Management
+
+================================================================================
+Chunk 31
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 16, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+SNU Chennai - Curriculum - B.Tech. Bachelor of Technology Computer Science and 
+Engineering (Internet of Things) (R2025) 
+ 
+MICROSPECIALIZATION 
+ 
+The University proposes to offer Micro-Specializations to Undergraduate students. Its salient 
+features are as follows:   
+1.  Each Micro-Specialization has a defined structure in terms of three sequential 
+components:  
+ Component I - One Foundation course that constitutes a mandatory requirement 
+and also a prerequisite for subsequent components.  
+ Component II - Two courses from a specified vertical. 
+ Component III - Project/Design/Term Paper    
+2.  A Student would be required to complete all three components (10-12 credits) from the 
+specified stream to earn a Micro-Specialization.    
+ 
+Eligibility for Micro-Specialization registration 
+ 
+To register for a Micro-Specialization, the student must have completed all curricular 
+requirements up to the previous semester and have a CGPA ≥ 8.5. The student must maintain a
+
+================================================================================
+Chunk 32
+Metadata: {'source': 'Curriculum_BTech_CSE_IoT-R2025.pdf', 'doc_id': 'curriculum_btech_cse_iot-r2025', 'page': 16, 'section': 'Unknown', 'type': 'text'}
+--------------------------------------------------------------------------------
+To register for a Micro-Specialization, the student must have completed all curricular 
+requirements up to the previous semester and have a CGPA ≥ 8.5. The student must maintain a 
+CGPA ≥ 8.5 without any backlog in the subsequent semesters to keep the Micro-Specialization 
+registration active. The Micro-Specialization must not overlap with the Major Core courses or 
+Minor Stream courses credited as part of the degree program. 
+ 
+Provisional List of Micro-Specialization Verticals  
+ 
+The following is the list of Micro-Specialization verticals offered to our undergraduate students: 
+1. Artificial Intelligence and Data Science  
+2. Internet of Things 
+3. Cyber security  
+4. Medical Technology 
+5. Advanced Robotic Systems 
+6. Quantum Technology 
+7. Micro and Smart Systems Technology
+
