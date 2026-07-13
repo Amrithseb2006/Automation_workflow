@@ -369,7 +369,6 @@ def query(req: QueryRequest):
                 "If the information is unavailable in the retrieved context,"
                 "clearly say that."
 
-                "Always mention the source document and page number if available."
             )),
             HumanMessage(content=f"Context:\n{context}\n\nQuestion: {req.query}"),
         ]
