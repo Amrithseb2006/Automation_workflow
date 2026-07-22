@@ -5,7 +5,7 @@ import asyncio
 from contextlib import asynccontextmanager
 from typing import Optional
 
-from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks
+from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks , Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -45,6 +45,7 @@ app.add_middleware(
 # ── Pydantic schemas ──────────────────────────────────────────────
 class QueryRequest(BaseModel):
     query: str
+    namespace: str
     top_k: int = 5
 
 class ChunkResult(BaseModel):
@@ -68,7 +69,7 @@ class IngestStatusResponse(BaseModel):
     error: Optional[str] = None
 
 # ── Ingestion helpers (imported lazily to avoid slow startup) ─────
-def _run_ingestion(job_id: str, file_path: str, use_image_captions: bool):
+def _run_ingestion(job_id: str, file_path: str, namespace: str, use_image_captions: bool):
     """
     Blocking function run in a thread via asyncio.to_thread.
     Updates ingestion_jobs[job_id] throughout.
@@ -128,7 +129,7 @@ def _run_ingestion(job_id: str, file_path: str, use_image_captions: bool):
         client = genai.Client(
             api_key=os.getenv("GOOGLE_API_KEY")
         )
-        index_name = "medirag-gemini"
+        index_name = "workflow-testing"
 
         if not pc.has_index(index_name):
 
@@ -200,7 +201,7 @@ def _run_ingestion(job_id: str, file_path: str, use_image_captions: bool):
 
                 vectors=records[i:i+batch_size],
 
-                namespace="example-namespace"
+                namespace=namespace
 
             )
             job["processed"] = min(i + batch_size, len(records))
@@ -233,7 +234,7 @@ def clear_index():
         from pinecone import Pinecone
         pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 
-        index = pc.Index("medirag-gemini")  
+        index = pc.Index("workflow-testing")  
         index.delete(delete_all=True, namespace="example-namespace")  
 
         return {"status": "ok", "message": "Index cleared."}
@@ -247,6 +248,7 @@ def clear_index():
 async def ingest_pdf(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
+    namespace: str = Form(...),
     use_image_captions: bool = False,
 ):
     """
@@ -276,6 +278,7 @@ async def ingest_pdf(
         _run_ingestion,
         job_id,
         tmp_path,
+        namespace,
         use_image_captions,
     )
 
@@ -306,7 +309,7 @@ def query(req: QueryRequest):
 
         # ── Retrieve ─────────────────────────────────────────────
         pc    = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-        index = pc.Index("medirag-gemini")
+        index = pc.Index("workflow-testing")
 
         client = genai.Client(
             api_key=os.getenv("GOOGLE_API_KEY")
@@ -326,7 +329,7 @@ def query(req: QueryRequest):
             vector=query_vector,
             top_k=10,
             include_metadata=True,
-            namespace="example-namespace"
+            namespace=req.namespace
         )
 
         chunks = []

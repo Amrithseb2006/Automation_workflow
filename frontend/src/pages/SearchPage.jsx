@@ -9,6 +9,7 @@ const UploadPanel = () => {
   const [status, setStatus] = useState(null);
   const [progress, setProgress] = useState({ message: "", processed: 0, total: 0 });
   const [errorMsg, setErrorMsg] = useState("");
+  const [namespace, setNamespace] = useState("admissions");
   const inputRef = useRef(null);
   const pollRef = useRef(null);
 
@@ -19,7 +20,12 @@ const UploadPanel = () => {
   };
 
   const handleClear = async () => {
-  await fetch(`${API_BASE}/clear`, { method: "DELETE" });
+  await fetch(
+    `${API_BASE}/clear?namespace=${namespace}`,
+    {
+        method: "DELETE"
+    }
+    );
   reset();
 };
 
@@ -31,8 +37,15 @@ const UploadPanel = () => {
 
     try {
       const form = new FormData();
+
       form.append("file", file);
-      const res = await fetch(`${API_BASE}/ingest`, { method: "POST", body: form });
+      form.append("namespace", namespace);
+      form.append("use_image_captions", false);
+
+      const res = await fetch(`${API_BASE}/ingest`, {
+          method: "POST",
+          body: form
+      });
       if (!res.ok) throw new Error((await res.json()).detail || "Upload failed");
       const { job_id } = await res.json();
 
@@ -71,6 +84,40 @@ const UploadPanel = () => {
       <p className="font-mono mb-4" style={{ color: "var(--text-muted)", fontSize: "11px", letterSpacing: "0.08em" }}>
         UPLOAD DOCUMENT
       </p>
+      <div style={{ marginBottom: "16px" }}>
+        <label
+          style={{
+            display: "block",
+            marginBottom: "6px",
+            color: "var(--text-muted)",
+            fontSize: "12px"
+          }}
+        >
+          Department
+        </label>
+
+        <select
+          value={namespace}
+          onChange={(e) => setNamespace(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            borderRadius: "8px",
+            background: "var(--surface2)",
+            color: "var(--text)",
+            border: "1px solid var(--border)"
+          }}
+        >
+          <option value="admissions">Admissions</option>
+          <option value="finance">Finance</option>
+          <option value="academics">Academics</option>
+          <option value="hostel">Hostel</option>
+          <option value="examinations">Examinations</option>
+          <option value="placements">Placements</option>
+          <option value="transport">Transport</option>
+          <option value="it_support">IT Support</option>
+        </select>
+      </div>
 
       {status === "done" ? (
 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -206,6 +253,7 @@ const SearchPage = () => {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [namespace, setNamespace] = useState("admissions");
   const [error, setError] = useState(null);
   const [expandedChunk, setExpandedChunk] = useState(null);
 
@@ -220,7 +268,7 @@ const SearchPage = () => {
       const res = await fetch(`${API_BASE}/query`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: query.trim(), top_k: 5 }),
+        body: JSON.stringify({ query: query.trim(),namespace: namespace, top_k: 5 }),
       });
       if (!res.ok) throw new Error((await res.json()).detail || "Server error");
       setResult(await res.json());
@@ -251,9 +299,51 @@ const SearchPage = () => {
 
         {/* Search */}
        <div className="flex justify-center mb-8 sm:mb-10 px-2 fade-up fade-up-2">
-  <div className="w-full max-w-2xl">
-    <SearchInput query={query} setQuery={setQuery} onSearch={handleSearch} loading={loading} />
-  </div>
+      <div className="w-full max-w-2xl">
+
+      <div style={{ marginBottom: "12px" }}>
+        <label
+          style={{
+            display: "block",
+            marginBottom: "6px",
+            color: "var(--text-muted)",
+            fontSize: "12px"
+          }}
+        >
+          Department
+        </label>
+
+        <select
+          value={namespace}
+          onChange={(e) => setNamespace(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            borderRadius: "8px",
+            background: "var(--surface2)",
+            color: "var(--text)",
+            border: "1px solid var(--border)"
+          }}
+        >
+          <option value="admissions">Admissions</option>
+          <option value="finance">Finance</option>
+          <option value="academics">Academics</option>
+          <option value="hostel">Hostel</option>
+          <option value="examinations">Examinations</option>
+          <option value="placements">Placements</option>
+          <option value="transport">Transport</option>
+          <option value="it_support">IT Support</option>
+        </select>
+      </div>
+
+      <SearchInput
+          query={query}
+          setQuery={setQuery}
+          onSearch={handleSearch}
+          loading={loading}
+      />
+
+    </div>
 </div>
 
         {/* Two-column */}
