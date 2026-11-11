@@ -1,3 +1,4 @@
+
 import os
 import uuid
 import shutil
@@ -5,7 +6,15 @@ import asyncio
 from contextlib import asynccontextmanager
 from typing import Optional
 
-from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks , Form
+from fastapi import (
+    FastAPI,
+    UploadFile,
+    File,
+    HTTPException,
+    BackgroundTasks,
+    Form,
+    Query,
+)
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -15,24 +24,30 @@ from google.genai import types
 
 load_dotenv()
 
-# ── In-memory job store ───────────────────────────────────────────
-# Maps job_id → { status, message, total, processed, error }
+
+# ============================================================
+# IN-MEMORY INGESTION JOB STORE
+# ============================================================
+
 ingestion_jobs: dict[str, dict] = {}
 
-# ── App setup ─────────────────────────────────────────────────────
+
+# ============================================================
+# FASTAPI APPLICATION SETUP
+# ============================================================
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: ensure temp upload dir exists
     os.makedirs("tmp_uploads", exist_ok=True)
     yield
-    # Shutdown: clean up
     shutil.rmtree("tmp_uploads", ignore_errors=True)
+
 
 app = FastAPI(
     title="MediRAG API",
-    description="RAG backend for WHO clinical guideline PDFs",
-    version="1.0.0",
-    lifespan=lifespan
+    description="RAG backend with Adaptive Retrieval Intelligence",
+    version="2.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -42,11 +57,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Pydantic schemas ──────────────────────────────────────────────
+
+# ============================================================
+# PYDANTIC SCHEMAS
+# ============================================================
+
 class QueryRequest(BaseModel):
     query: str
     namespace: str
     top_k: int = 5
+
 
 class ChunkResult(BaseModel):
     text: str
@@ -54,56 +74,92 @@ class ChunkResult(BaseModel):
     page: int | str
     section: str
     score: float
-class AnswerResponse(BaseModel):
-    answer: str
+
+
 class QueryResponse(BaseModel):
     answer: str
     chunks: list[ChunkResult]
+    retrieval: dict = {}
+
 
 class IngestStatusResponse(BaseModel):
     job_id: str
-    status: str          # "pending" | "running" | "done" | "failed"
+    status: str
     message: str
     total: int
     processed: int
     error: Optional[str] = None
 
-# ── Ingestion helpers (imported lazily to avoid slow startup) ─────
-def _run_ingestion(job_id: str, file_path: str, namespace: str, use_image_captions: bool):
+
+# ============================================================
+# PDF INGESTION PIPELINE
+# ============================================================
+
+def _run_ingestion(
+    job_id: str,
+    file_path: str,
+    namespace: str,
+    use_image_captions: bool,
+):
     """
-    Blocking function run in a thread via asyncio.to_thread.
-    Updates ingestion_jobs[job_id] throughout.
+    Blocking ingestion function executed in a background thread.
     """
+
     try:
-        # Lazy imports so startup is fast
-        import pymupdf
         from langchain_text_splitters import RecursiveCharacterTextSplitter
         from pinecone import Pinecone
 
         job = ingestion_jobs[job_id]
         job["status"] = "running"
 
-        # ── Step 1: Load text ────────────────────────────────────
-        job["message"] = "Extracting text from PDF..."
-        from load import load_pdf
-        text_docs = load_pdf(file_path)
-        job["message"] = f"Extracted {len(text_docs)} text pages."
+        # ----------------------------------------------------
+        # STEP 1: LOAD PDF TEXT
+        # ----------------------------------------------------
 
-        # ── Step 2 (optional): Image captions ───────────────────
+        job["message"] = "Extracting text from PDF..."
+
+        from load import load_pdf
+
+        text_docs = load_pdf(file_path)
+
+        job["message"] = (
+            f"Extracted {len(text_docs)} text pages."
+        )
+
+        # ----------------------------------------------------
+        # STEP 2: OPTIONAL IMAGE CAPTION EXTRACTION
+        # ----------------------------------------------------
+
         caption_docs = []
+
         if use_image_captions:
+
             job["message"] = "Extracting images..."
+
             from multimodal_info import extract_images_from_pdf
+
             image_docs = extract_images_from_pdf(file_path)
-            job["message"] = f"Captioning {len(image_docs)} images with Gemini..."
+
+            job["message"] = (
+                f"Captioning {len(image_docs)} images with Gemini..."
+            )
+
             from image_to_text import images_to_text_gemini
+
             caption_docs = images_to_text_gemini(image_docs)
-            job["message"] = f"Generated {len(caption_docs)} image captions."
+
+            job["message"] = (
+                f"Generated {len(caption_docs)} image captions."
+            )
 
         all_docs = text_docs + caption_docs
 
-        # ── Step 3: Chunk ────────────────────────────────────────
+        # ----------------------------------------------------
+        # STEP 3: CHUNK DOCUMENTS
+        # ----------------------------------------------------
+
         job["message"] = "Chunking documents..."
+
         splitter = RecursiveCharacterTextSplitter(
             chunk_size=1200,
             chunk_overlap=200,
@@ -112,59 +168,73 @@ def _run_ingestion(job_id: str, file_path: str, namespace: str, use_image_captio
                 "\n",
                 ". ",
                 " ",
-                ""
-            ]
+                "",
+            ],
         )
+
         chunked_docs = []
+
         for doc in all_docs:
+
             for chunk in splitter.split_text(doc["text"]):
-                chunked_docs.append({"text": chunk, "metadata": doc["metadata"]})
+
+                chunked_docs.append({
+                    "text": chunk,
+                    "metadata": doc["metadata"],
+                })
 
         job["total"] = len(chunked_docs)
-        job["message"] = f"Created {len(chunked_docs)} chunks."
 
-        # ── Step 4: Upsert to Pinecone ───────────────────────────
+        job["message"] = (
+            f"Created {len(chunked_docs)} chunks."
+        )
+
+        # ----------------------------------------------------
+        # STEP 4: CONNECT TO PINECONE AND GEMINI
+        # ----------------------------------------------------
+
         job["message"] = "Connecting to Pinecone..."
-        pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+
+        pc = Pinecone(
+            api_key=os.getenv("PINECONE_API_KEY")
+        )
+
         client = genai.Client(
             api_key=os.getenv("GOOGLE_API_KEY")
         )
+
         index_name = "workflow-testing"
 
         if not pc.has_index(index_name):
 
-            job["message"] = "Creating Pinecone Index..."
+            job["message"] = "Creating Pinecone index..."
 
             pc.create_index(
-
                 name=index_name,
-
                 dimension=3072,
-
                 metric="cosine",
-
                 spec=ServerlessSpec(
                     cloud="aws",
-                    region="us-east-1"
-                )
+                    region="us-east-1",
+                ),
             )
 
         index = pc.Index(index_name)
+
+        # ----------------------------------------------------
+        # STEP 5: GENERATE DOCUMENT EMBEDDINGS
+        # ----------------------------------------------------
 
         records = []
 
         for doc in chunked_docs:
 
             embedding = client.models.embed_content(
-
                 model="gemini-embedding-001",
-
                 contents=doc["text"],
-
                 config=types.EmbedContentConfig(
                     task_type="RETRIEVAL_DOCUMENT"
-                )
-
+                ),
             )
 
             vector = embedding.embeddings[0].values
@@ -172,107 +242,150 @@ def _run_ingestion(job_id: str, file_path: str, namespace: str, use_image_captio
             meta = doc["metadata"]
 
             records.append({
-
                 "id": str(uuid.uuid4()),
-
                 "values": vector,
-
                 "metadata": {
-
                     "text": doc["text"],
-
-                    "doc_id": str(meta.get("doc_id","")),
-
-                    "page": int(meta.get("page",0)),
-
-                    "section": str(meta.get("section","")),
-
-                    "source": str(meta.get("source","")),
-
-                    "type": str(meta.get("type",""))
-
-                }
-
+                    "doc_id": str(meta.get("doc_id", "")),
+                    "page": int(meta.get("page", 0)),
+                    "section": str(meta.get("section", "")),
+                    "source": str(meta.get("source", "")),
+                    "type": str(meta.get("type", "")),
+                },
             })
 
+        # ----------------------------------------------------
+        # STEP 6: UPSERT TO PINECONE
+        # ----------------------------------------------------
+
         batch_size = 50
+
         for i in range(0, len(records), batch_size):
+
             index.upsert(
-
-                vectors=records[i:i+batch_size],
-
-                namespace=namespace
-
+                vectors=records[i:i + batch_size],
+                namespace=namespace,
             )
-            job["processed"] = min(i + batch_size, len(records))
-            job["message"] = f"Upserted {job['processed']}/{len(records)} chunks..."
 
-        job["status"]  = "done"
-        job["message"] = f"Ingestion complete. {len(records)} chunks indexed."
+            job["processed"] = min(
+                i + batch_size,
+                len(records),
+            )
+
+            job["message"] = (
+                f"Upserted {job['processed']}/{len(records)} chunks..."
+            )
+
+        job["status"] = "done"
+
+        job["message"] = (
+            f"Ingestion complete. {len(records)} chunks indexed."
+        )
+
         job["processed"] = len(records)
 
     except Exception as e:
+
         ingestion_jobs[job_id]["status"] = "failed"
-        ingestion_jobs[job_id]["error"]  = str(e)
+        ingestion_jobs[job_id]["error"] = str(e)
         ingestion_jobs[job_id]["message"] = "Ingestion failed."
 
     finally:
-        # Clean up the uploaded file
+
         if os.path.exists(file_path):
             os.remove(file_path)
 
 
-# ── Routes ────────────────────────────────────────────────────────
+# ============================================================
+# API ROUTES
+# ============================================================
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "MediRAG API"}
+
+    return {
+        "status": "ok",
+        "service": "MediRAG API",
+    }
+
+
+# ============================================================
+# CLEAR PINECONE NAMESPACE
+# ============================================================
 
 @app.delete("/clear")
-def clear_index():
+def clear_index(namespace: str = Query(..., min_length=1)):
+
     try:
-        from pinecone import Pinecone
-        pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 
-        index = pc.Index("workflow-testing")  
-        index.delete(delete_all=True, namespace="example-namespace")  
+        pc = Pinecone(
+            api_key=os.getenv("PINECONE_API_KEY")
+        )
 
-        return {"status": "ok", "message": "Index cleared."}
+        index = pc.Index("workflow-testing")
+
+        index.delete(
+            delete_all=True,
+            namespace=namespace,
+        )
+
+        return {
+            "status": "ok",
+            "message": f"Namespace '{namespace}' cleared.",
+        }
 
     except Exception as e:
-        print("CLEAR ERROR:", str(e))  
-        raise HTTPException(status_code=500, detail=str(e))
 
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
+
+
+# ============================================================
+# PDF UPLOAD ENDPOINT
+# ============================================================
 
 @app.post("/ingest", status_code=202)
 async def ingest_pdf(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     namespace: str = Form(...),
-    use_image_captions: bool = False,
+    use_image_captions: bool = Form(False),
 ):
     """
-    Upload a PDF and kick off the ingestion pipeline in the background.
-    Returns a job_id you can poll via GET /ingest/status/{job_id}.
+    Upload a PDF and start the ingestion pipeline.
     """
-    if not file.filename.endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files are accepted.")
 
-    # Save upload to disk temporarily
-    job_id   = str(uuid.uuid4())
-    tmp_path = f"tmp_uploads/{job_id}_{file.filename}"
+    if not file.filename.lower().endswith(".pdf"):
+
+        raise HTTPException(
+            status_code=400,
+            detail="Only PDF files are accepted.",
+        )
+
+    job_id = str(uuid.uuid4())
+
+    os.makedirs("tmp_uploads", exist_ok=True)
+
+    safe_filename = os.path.basename(file.filename)
+
+    tmp_path = os.path.join(
+        "tmp_uploads",
+        f"{job_id}_{safe_filename}",
+    )
+
     with open(tmp_path, "wb") as f:
         shutil.copyfileobj(file.file, f)
 
     ingestion_jobs[job_id] = {
-        "status":    "pending",
-        "message":   "Job queued.",
-        "total":     0,
+        "status": "pending",
+        "message": "Job queued.",
+        "total": 0,
         "processed": 0,
-        "error":     None,
+        "error": None,
     }
 
-    # Run blocking ingestion in a thread so the event loop stays free
     background_tasks.add_task(
         asyncio.to_thread,
         _run_ingestion,
@@ -282,104 +395,250 @@ async def ingest_pdf(
         use_image_captions,
     )
 
-    return {"job_id": job_id, "message": "Ingestion started."}
+    return {
+        "job_id": job_id,
+        "message": "Ingestion started.",
+    }
 
 
-@app.get("/ingest/status/{job_id}", response_model=IngestStatusResponse)
+# ============================================================
+# INGESTION STATUS ENDPOINT
+# ============================================================
+
+@app.get(
+    "/ingest/status/{job_id}",
+    response_model=IngestStatusResponse,
+)
 def ingest_status(job_id: str):
-    """Poll ingestion progress."""
+
     job = ingestion_jobs.get(job_id)
+
     if not job:
-        raise HTTPException(status_code=404, detail="Job not found.")
-    return IngestStatusResponse(job_id=job_id, **job)
+
+        raise HTTPException(
+            status_code=404,
+            detail="Job not found.",
+        )
+
+    return IngestStatusResponse(
+        job_id=job_id,
+        **job,
+    )
 
 
-@app.post("/query", response_model=AnswerResponse)
+# ============================================================
+# ADAPTIVE RETRIEVAL + RAG QUERY ENDPOINT
+# ============================================================
+
+@app.post("/query", response_model=QueryResponse)
 def query(req: QueryRequest):
     """
-    Retrieve relevant chunks from Pinecone and generate an answer via Groq.
+    Adaptive Retrieval Intelligence pipeline:
+
+    1. Initial retrieval
+    2. Retrieval quality assessment
+    3. Conditional query rewriting
+    4. Expanded retrieval
+    5. Chunk deduplication
+    6. Hybrid reranking
+    7. Evidence-grounded answer generation
     """
+
     if not req.query.strip():
-        raise HTTPException(status_code=400, detail="Query cannot be empty.")
+
+        raise HTTPException(
+            status_code=400,
+            detail="Query cannot be empty.",
+        )
+
+    if not req.namespace.strip():
+
+        raise HTTPException(
+            status_code=400,
+            detail="Namespace cannot be empty.",
+        )
 
     try:
+
         from pinecone import Pinecone
         from langchain_groq import ChatGroq
-        from langchain_core.messages import SystemMessage, HumanMessage
+        from langchain_core.messages import (
+            SystemMessage,
+            HumanMessage,
+        )
 
-        # ── Retrieve ─────────────────────────────────────────────
-        pc    = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
+        from adaptive_retrieval import (
+            AdaptiveRetriever,
+            RetrievalConfig,
+        )
+
+        # ----------------------------------------------------
+        # STEP 1: INITIALIZE CLIENTS
+        # ----------------------------------------------------
+
+        pc = Pinecone(
+            api_key=os.getenv("PINECONE_API_KEY")
+        )
+
         index = pc.Index("workflow-testing")
 
         client = genai.Client(
             api_key=os.getenv("GOOGLE_API_KEY")
         )
 
-        embedding = client.models.embed_content(
-            model="gemini-embedding-001",
-            contents=req.query,
-            config=types.EmbedContentConfig(
-                task_type="RETRIEVAL_QUERY"
+        llm = ChatGroq(
+            api_key=os.getenv("GROQ_API_KEY"),
+            model="qwen/qwen3.8-27b",
+            temperature=0.2,
+        )
+
+        # ----------------------------------------------------
+        # STEP 2: GEMINI QUERY EMBEDDING FUNCTION
+        # ----------------------------------------------------
+
+        def embed_query(query_text: str):
+
+            embedding = client.models.embed_content(
+                model="gemini-embedding-001",
+                contents=query_text,
+                config=types.EmbedContentConfig(
+                    task_type="RETRIEVAL_QUERY"
+                ),
             )
+
+            return embedding.embeddings[0].values
+
+        # ----------------------------------------------------
+        # STEP 3: GROQ QUERY REWRITING FUNCTION
+        # ----------------------------------------------------
+
+        def rewrite_query(original_query: str):
+
+            messages = [
+                SystemMessage(
+                    content=(
+                        "You are a search query optimization assistant. "
+                        "Rewrite the user's question into a clearer, "
+                        "more specific search query for retrieving "
+                        "relevant institutional documents. "
+                        "Preserve the original intent and important "
+                        "entities. Return only the rewritten query. "
+                        "Do not answer the question."
+                    )
+                ),
+                HumanMessage(
+                    content=original_query
+                ),
+            ]
+
+            response = llm.invoke(messages)
+
+            return response.content.strip()
+
+        # ----------------------------------------------------
+        # STEP 4: CONFIGURE ADAPTIVE RETRIEVAL
+        # ----------------------------------------------------
+
+        config = RetrievalConfig(
+            initial_top_k=max(1, min(req.top_k, 20)),
+            expanded_top_k=10,
+            final_top_k=max(1, min(req.top_k, 10)),
         )
 
-        query_vector = embedding.embeddings[0].values
-
-        results = index.query(
-            vector=query_vector,
-            top_k=10,
-            include_metadata=True,
-            namespace=req.namespace
+        retriever = AdaptiveRetriever(
+            index=index,
+            embed_query=embed_query,
+            rewrite_query=rewrite_query,
+            config=config,
         )
 
-        chunks = []
-        for match in results.matches:
-            meta = match.metadata
-            chunks.append(ChunkResult(
-            text=meta.get("text",""),
-            source=meta.get("source",""),
-            page=meta.get("page",""),
-            section=meta.get("section",""),
-            score=match.score
-        ))
+        # ----------------------------------------------------
+        # STEP 5: EXECUTE ADAPTIVE RETRIEVAL
+        # ----------------------------------------------------
+
+        retrieval_result = retriever.retrieve(
+            query=req.query,
+            namespace=req.namespace,
+        )
+
+        chunks = retrieval_result["chunks"]
+
+        retrieval_info = retrieval_result["retrieval"]
+
+        # ----------------------------------------------------
+        # STEP 6: HANDLE EMPTY RETRIEVAL
+        # ----------------------------------------------------
 
         if not chunks:
-            return AnswerResponse(
-                answer="No relevant context found in the knowledge base."
+
+            return QueryResponse(
+                answer=(
+                    "No relevant context found in the knowledge base. "
+                    "Please try rephrasing your question or check "
+                    "whether documents have been uploaded."
+                ),
+                chunks=[],
+                retrieval=retrieval_info,
             )
 
-        # ── Build context ─────────────────────────────────────────
+        # ----------------------------------------------------
+        # STEP 7: BUILD EVIDENCE CONTEXT
+        # ----------------------------------------------------
+
         context_parts = []
-        for i, c in enumerate(chunks, 1):
+
+        for i, chunk in enumerate(chunks, 1):
+
             context_parts.append(
-                f"[Chunk {i} | source: {c.source} | page: {c.page} | score: {c.score:.3f}]\n"
-                f"{c.text}"
+                f"[Chunk {i} | Source: {chunk['source']} "
+                f"| Page: {chunk['page']} "
+                f"| Relevance: {chunk['score']:.3f}]\n"
+                f"{chunk['text']}"
             )
+
         context = "\n\n---\n\n".join(context_parts)
 
-        # ── Generate ──────────────────────────────────────────────
-        llm = ChatGroq(
-            api_key    = os.getenv("GROQ_API_KEY"),
-            model      = "llama-3.3-70b-versatile",
-            temperature= 0.2,
-        )
+        # ----------------------------------------------------
+        # STEP 8: GENERATE GROUNDED ANSWER
+        # ----------------------------------------------------
 
         messages = [
-            SystemMessage(content=(
-                "You are an educational institution RAG assistant."
 
-                "Answer ONLY using the retrieved context."
-                "If the information is unavailable in the retrieved context,"
-                "clearly say that."
+            SystemMessage(
+                content=(
+                    "You are an educational institution RAG assistant. "
+                    "Answer ONLY using the retrieved context. "
+                    "Do not invent facts or make unsupported assumptions. "
+                    "If the answer is unavailable in the context, "
+                    "clearly state that the information was not found. "
+                    "Use clear and concise language."
+                )
+            ),
 
-            )),
-            HumanMessage(content=f"Context:\n{context}\n\nQuestion: {req.query}"),
+            HumanMessage(
+                content=(
+                    f"Retrieved context:\n{context}\n\n"
+                    f"Question: {req.query}"
+                )
+            ),
+
         ]
 
         response = llm.invoke(messages)
-        return AnswerResponse(
-            answer=response.content
+
+        # ----------------------------------------------------
+        # STEP 9: RETURN ANSWER, SOURCES AND DIAGNOSTICS
+        # ----------------------------------------------------
+
+        return QueryResponse(
+            answer=response.content,
+            chunks=chunks,
+            retrieval=retrieval_info,
         )
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
