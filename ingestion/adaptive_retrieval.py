@@ -8,6 +8,7 @@ Performs:
 3. Conditional query rewriting
 4. Expanded retrieval
 5. Deduplication and hybrid reranking
+6. Failure handling and retrieval diagnostics
 
 This module does not generate the final answer.
 """
@@ -23,8 +24,8 @@ class RetrievalConfig:
     expanded_top_k: int = 10
     final_top_k: int = 5
 
-    # Initial heuristic thresholds. These must be calibrated
-    # against a labelled evaluation dataset later.
+    # Initial heuristic thresholds.
+    # Calibrate using a labelled evaluation dataset.
     good_score_threshold: float = 0.65
     minimum_results: int = 2
 
@@ -33,12 +34,12 @@ class RetrievalConfig:
 
 
 def tokenize(text: str) -> set[str]:
-    """Convert text into a set of lowercase alphanumeric tokens."""
+    """Convert text into lowercase alphanumeric tokens."""
     return set(re.findall(r"\b[a-zA-Z0-9]+\b", text.lower()))
 
 
 def lexical_similarity(query: str, text: str) -> float:
-    """Calculate simple query-token coverage in a retrieved chunk."""
+    """Calculate query-token coverage in a retrieved chunk."""
     query_tokens = tokenize(query)
     text_tokens = tokenize(text)
 
@@ -58,9 +59,9 @@ def assess_retrieval_quality(
     config: RetrievalConfig,
 ) -> dict:
     """
-    Assess whether the initial retrieval is sufficiently relevant.
+    Assess whether initial retrieval is sufficiently relevant.
 
-    This is a heuristic assessment, not a calibrated evaluation metric.
+    This is a heuristic assessment, not a calibrated metric.
     """
     if not chunks:
         return {
@@ -93,6 +94,7 @@ def assess_retrieval_quality(
 def deduplicate_chunks(chunks: list[dict]) -> list[dict]:
     """Remove duplicate chunks using source, page and text."""
     unique = {}
+
     for chunk in chunks:
         key = (
             chunk.get("source", ""),
@@ -116,22 +118,30 @@ def rerank_chunks(
     """
     Rerank using dense relevance and lexical query coverage.
 
-    The original Pinecone score is retained as dense_score.
+    Original Pinecone scores are retained as dense_score.
     """
+    reranked = []
+
     for chunk in chunks:
+        # Avoid modifying the original candidate dictionaries.
+        ranked_chunk = dict(chunk)
+
         dense = normalize_dense_score(chunk["score"])
         lexical = lexical_similarity(query, chunk["text"])
 
-        chunk["dense_score"] = round(dense, 4)
-        chunk["lexical_score"] = round(lexical, 4)
-        chunk["score"] = round(
+        ranked_chunk["dense_score"] = round(dense, 4)
+        ranked_chunk["lexical_score"] = round(lexical, 4)
+
+        ranked_chunk["score"] = round(
             config.dense_weight * dense
             + config.lexical_weight * lexical,
             4,
         )
 
+        reranked.append(ranked_chunk)
+
     return sorted(
-        chunks,
+        reranked,
         key=lambda chunk: chunk["score"],
         reverse=True,
     )
@@ -142,10 +152,13 @@ class AdaptiveRetriever:
     Coordinates Pinecone retrieval, quality assessment,
     optional query rewriting, merging and reranking.
 
-    embed_query: function accepting a query and returning
-                 a Gemini embedding vector.
-    rewrite_query: function accepting a query and returning
-                   a rewritten query.
+    embed_query:
+        Function accepting a query and returning a Gemini
+        embedding vector.
+
+    rewrite_query:
+        Function accepting a query and returning a rewritten
+        query.
     """
 
     def __init__(
@@ -166,6 +179,8 @@ class AdaptiveRetriever:
         namespace: str,
         top_k: int,
     ) -> list[dict]:
+        """Generate an embedding and retrieve chunks from Pinecone."""
+
         vector = self.embed_query(query)
 
         results = self.index.query(
@@ -196,16 +211,38 @@ class AdaptiveRetriever:
         namespace: str,
         top_k: int | None = None,
     ) -> dict:
-        """Execute the complete adaptive retrieval workflow."""
+        """Execute adaptive retrieval with controlled failure handling."""
 
-        initial_k = top_k or self.config.initial_top_k
+        initial_k = (
+            top_k
+            if top_k is not None and top_k > 0
+            else self.config.initial_top_k
+        )
 
         # Stage 1: Initial retrieval
-        initial_chunks = self._search(
-            query,
-            namespace,
-            initial_k,
-        )
+        try:
+            initial_chunks = self._search(
+                query,
+                namespace,
+                initial_k,
+            )
+
+        except Exception as exc:
+            # Do not attempt rewriting if initial retrieval fails.
+            return {
+                "chunks": [],
+                "retrieval": {
+                    "initial_result_count": 0,
+                    "final_result_count": 0,
+                    "retrieval_quality": "unavailable",
+                    "top_initial_score": 0.0,
+                    "query_rewritten": False,
+                    "rewritten_query": None,
+                    "strategy": "retrieval_unavailable",
+                    "expanded_retrieval_improved": None,
+                    "error": type(exc).__name__,
+                },
+            }
 
         # Stage 2: Assess initial retrieval quality
         assessment = assess_retrieval_quality(
@@ -216,14 +253,18 @@ class AdaptiveRetriever:
         all_chunks = list(initial_chunks)
         rewritten_query = None
         strategy = "initial_retrieval"
+        expanded_improved = None
 
-        # Stage 3: Rewrite and retrieve only when necessary
+        # Stage 3: Conditional query rewriting
         if assessment["should_rewrite"]:
             try:
-                rewritten_query = self.rewrite_query(query)
+                candidate_query = self.rewrite_query(query)
 
-                if rewritten_query and rewritten_query.strip():
-                    rewritten_query = rewritten_query.strip()
+                if (
+                    isinstance(candidate_query, str)
+                    and candidate_query.strip()
+                ):
+                    rewritten_query = candidate_query.strip()
 
                     expanded_chunks = self._search(
                         rewritten_query,
@@ -231,23 +272,52 @@ class AdaptiveRetriever:
                         self.config.expanded_top_k,
                     )
 
+                    # Compare best raw dense scores.
+                    # This is a heuristic diagnostic only:
+                    # scores from different queries are not
+                    # calibrated evidence of relevance improvement.
+                    initial_best = max(
+                        (
+                            chunk["score"]
+                            for chunk in initial_chunks
+                        ),
+                        default=0.0,
+                    )
+
+                    expanded_best = max(
+                        (
+                            chunk["score"]
+                            for chunk in expanded_chunks
+                        ),
+                        default=0.0,
+                    )
+
+                    expanded_improved = (
+                        expanded_best > initial_best
+                    )
+
+                    # Preserve both candidate sets.
+                    # Final reranking uses the original query.
                     all_chunks.extend(expanded_chunks)
+
                     strategy = "adaptive_retrieval"
 
             except Exception:
-                # Preserve initial results if rewriting fails.
+                # Preserve initial results if rewriting or
+                # expanded retrieval fails.
                 strategy = "initial_retrieval_fallback"
 
-        # Stage 4: Deduplicate and rerank
+        # Stage 4: Deduplication
         unique_chunks = deduplicate_chunks(all_chunks)
 
+        # Stage 5: Hybrid reranking
         final_chunks = rerank_chunks(
             query,
             unique_chunks,
             self.config,
         )[:self.config.final_top_k]
 
-        # Stage 5: Return chunks and retrieval diagnostics
+        # Stage 6: Return chunks and diagnostics
         return {
             "chunks": final_chunks,
             "retrieval": {
@@ -258,5 +328,6 @@ class AdaptiveRetriever:
                 "query_rewritten": rewritten_query is not None,
                 "rewritten_query": rewritten_query,
                 "strategy": strategy,
+                "expanded_retrieval_improved": expanded_improved,
             },
         }

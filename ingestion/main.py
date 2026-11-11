@@ -16,7 +16,7 @@ from fastapi import (
     Query,
 )
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 from google import genai
 from pinecone import Pinecone, ServerlessSpec
@@ -79,7 +79,7 @@ class ChunkResult(BaseModel):
 class QueryResponse(BaseModel):
     answer: str
     chunks: list[ChunkResult]
-    retrieval: dict = {}
+    retrieval: dict = Field(default_factory=dict)
 
 
 class IngestStatusResponse(BaseModel):
@@ -107,7 +107,6 @@ def _run_ingestion(
 
     try:
         from langchain_text_splitters import RecursiveCharacterTextSplitter
-        from pinecone import Pinecone
 
         job = ingestion_jobs[job_id]
         job["status"] = "running"
@@ -133,7 +132,6 @@ def _run_ingestion(
         caption_docs = []
 
         if use_image_captions:
-
             job["message"] = "Extracting images..."
 
             from multimodal_info import extract_images_from_pdf
@@ -175,9 +173,7 @@ def _run_ingestion(
         chunked_docs = []
 
         for doc in all_docs:
-
             for chunk in splitter.split_text(doc["text"]):
-
                 chunked_docs.append({
                     "text": chunk,
                     "metadata": doc["metadata"],
@@ -206,7 +202,6 @@ def _run_ingestion(
         index_name = "workflow-testing"
 
         if not pc.has_index(index_name):
-
             job["message"] = "Creating Pinecone index..."
 
             pc.create_index(
@@ -228,7 +223,6 @@ def _run_ingestion(
         records = []
 
         for doc in chunked_docs:
-
             embedding = client.models.embed_content(
                 model="gemini-embedding-001",
                 contents=doc["text"],
@@ -261,7 +255,6 @@ def _run_ingestion(
         batch_size = 50
 
         for i in range(0, len(records), batch_size):
-
             index.upsert(
                 vectors=records[i:i + batch_size],
                 namespace=namespace,
@@ -285,13 +278,11 @@ def _run_ingestion(
         job["processed"] = len(records)
 
     except Exception as e:
-
         ingestion_jobs[job_id]["status"] = "failed"
         ingestion_jobs[job_id]["error"] = str(e)
         ingestion_jobs[job_id]["message"] = "Ingestion failed."
 
     finally:
-
         if os.path.exists(file_path):
             os.remove(file_path)
 
@@ -302,7 +293,6 @@ def _run_ingestion(
 
 @app.get("/health")
 def health():
-
     return {
         "status": "ok",
         "service": "MediRAG API",
@@ -315,9 +305,7 @@ def health():
 
 @app.delete("/clear")
 def clear_index(namespace: str = Query(..., min_length=1)):
-
     try:
-
         pc = Pinecone(
             api_key=os.getenv("PINECONE_API_KEY")
         )
@@ -335,7 +323,6 @@ def clear_index(namespace: str = Query(..., min_length=1)):
         }
 
     except Exception as e:
-
         raise HTTPException(
             status_code=500,
             detail=str(e),
@@ -357,11 +344,16 @@ async def ingest_pdf(
     Upload a PDF and start the ingestion pipeline.
     """
 
-    if not file.filename.lower().endswith(".pdf"):
-
+    if not file.filename or not file.filename.lower().endswith(".pdf"):
         raise HTTPException(
             status_code=400,
             detail="Only PDF files are accepted.",
+        )
+
+    if not namespace.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="Namespace cannot be empty.",
         )
 
     job_id = str(uuid.uuid4())
@@ -410,11 +402,9 @@ async def ingest_pdf(
     response_model=IngestStatusResponse,
 )
 def ingest_status(job_id: str):
-
     job = ingestion_jobs.get(job_id)
 
     if not job:
-
         raise HTTPException(
             status_code=404,
             detail="Job not found.",
@@ -445,21 +435,24 @@ def query(req: QueryRequest):
     """
 
     if not req.query.strip():
-
         raise HTTPException(
             status_code=400,
             detail="Query cannot be empty.",
         )
 
     if not req.namespace.strip():
-
         raise HTTPException(
             status_code=400,
             detail="Namespace cannot be empty.",
         )
 
-    try:
+    if req.top_k < 1:
+        raise HTTPException(
+            status_code=400,
+            detail="top_k must be at least 1.",
+        )
 
+    try:
         from pinecone import Pinecone
         from langchain_groq import ChatGroq
         from langchain_core.messages import (
@@ -497,7 +490,6 @@ def query(req: QueryRequest):
         # ----------------------------------------------------
 
         def embed_query(query_text: str):
-
             embedding = client.models.embed_content(
                 model="gemini-embedding-001",
                 contents=query_text,
@@ -513,7 +505,6 @@ def query(req: QueryRequest):
         # ----------------------------------------------------
 
         def rewrite_query(original_query: str):
-
             messages = [
                 SystemMessage(
                     content=(
@@ -559,18 +550,33 @@ def query(req: QueryRequest):
         retrieval_result = retriever.retrieve(
             query=req.query,
             namespace=req.namespace,
+            top_k=config.initial_top_k,
         )
 
         chunks = retrieval_result["chunks"]
-
         retrieval_info = retrieval_result["retrieval"]
 
         # ----------------------------------------------------
-        # STEP 6: HANDLE EMPTY RETRIEVAL
+        # STEP 6: HANDLE RETRIEVAL FAILURE
+        # ----------------------------------------------------
+
+        if retrieval_info.get("strategy") == "retrieval_unavailable":
+            raise HTTPException(
+                status_code=503,
+                detail={
+                    "message": (
+                        "Retrieval service is currently unavailable. "
+                        "Please try again later."
+                    ),
+                    "retrieval": retrieval_info,
+                },
+            )
+
+        # ----------------------------------------------------
+        # STEP 7: HANDLE EMPTY RETRIEVAL
         # ----------------------------------------------------
 
         if not chunks:
-
             return QueryResponse(
                 answer=(
                     "No relevant context found in the knowledge base. "
@@ -582,13 +588,12 @@ def query(req: QueryRequest):
             )
 
         # ----------------------------------------------------
-        # STEP 7: BUILD EVIDENCE CONTEXT
+        # STEP 8: BUILD EVIDENCE CONTEXT
         # ----------------------------------------------------
 
         context_parts = []
 
         for i, chunk in enumerate(chunks, 1):
-
             context_parts.append(
                 f"[Chunk {i} | Source: {chunk['source']} "
                 f"| Page: {chunk['page']} "
@@ -599,11 +604,10 @@ def query(req: QueryRequest):
         context = "\n\n---\n\n".join(context_parts)
 
         # ----------------------------------------------------
-        # STEP 8: GENERATE GROUNDED ANSWER
+        # STEP 9: GENERATE GROUNDED ANSWER
         # ----------------------------------------------------
 
         messages = [
-
             SystemMessage(
                 content=(
                     "You are an educational institution RAG assistant. "
@@ -614,20 +618,18 @@ def query(req: QueryRequest):
                     "Use clear and concise language."
                 )
             ),
-
             HumanMessage(
                 content=(
                     f"Retrieved context:\n{context}\n\n"
                     f"Question: {req.query}"
                 )
             ),
-
         ]
 
         response = llm.invoke(messages)
 
         # ----------------------------------------------------
-        # STEP 9: RETURN ANSWER, SOURCES AND DIAGNOSTICS
+        # STEP 10: RETURN ANSWER, SOURCES AND DIAGNOSTICS
         # ----------------------------------------------------
 
         return QueryResponse(
@@ -636,8 +638,10 @@ def query(req: QueryRequest):
             retrieval=retrieval_info,
         )
 
-    except Exception as e:
+    except HTTPException:
+        raise
 
+    except Exception as e:
         raise HTTPException(
             status_code=500,
             detail=str(e),

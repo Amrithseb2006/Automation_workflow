@@ -67,7 +67,11 @@ class TestChunkProcessing(unittest.TestCase):
         result = deduplicate_chunks(chunks)
 
         self.assertEqual(len(result), 2)
-        self.assertEqual(result[0]["score"], 0.90)
+        self.assertEqual(
+            next(c["score"] for c in result
+                 if c["text"] == "Admission process"),
+            0.90,
+        )
 
     def test_reranking(self):
         chunks = [
@@ -81,7 +85,10 @@ class TestChunkProcessing(unittest.TestCase):
             RetrievalConfig(),
         )
 
-        self.assertEqual(result[0]["text"], "Admission process for students")
+        self.assertEqual(
+            result[0]["text"],
+            "Admission process for students",
+        )
         self.assertIn("dense_score", result[0])
         self.assertIn("lexical_score", result[0])
 
@@ -131,7 +138,10 @@ class TestAdaptiveRetriever(unittest.TestCase):
             self.config,
         )
 
-        result = retriever.retrieve("admission process", "admissions")
+        result = retriever.retrieve(
+            "admission process",
+            "admissions",
+        )
 
         self.assertEqual(
             result["retrieval"]["strategy"],
@@ -160,7 +170,10 @@ class TestAdaptiveRetriever(unittest.TestCase):
             self.config,
         )
 
-        result = retriever.retrieve("admission process", "admissions")
+        result = retriever.retrieve(
+            "admission process",
+            "admissions",
+        )
 
         self.assertEqual(
             result["retrieval"]["strategy"],
@@ -183,10 +196,19 @@ class TestAdaptiveRetriever(unittest.TestCase):
             self.config,
         )
 
-        result = retriever.retrieve("unknown query", "admissions")
+        result = retriever.retrieve(
+            "unknown query",
+            "admissions",
+        )
 
-        self.assertEqual(result["retrieval"]["retrieval_quality"], "poor")
-        self.assertEqual(result["retrieval"]["final_result_count"], 0)
+        self.assertEqual(
+            result["retrieval"]["retrieval_quality"],
+            "poor",
+        )
+        self.assertEqual(
+            result["retrieval"]["final_result_count"],
+            0,
+        )
         self.assertTrue(result["retrieval"]["query_rewritten"])
 
     def test_rewriting_failure_preserves_initial_results(self):
@@ -204,13 +226,19 @@ class TestAdaptiveRetriever(unittest.TestCase):
             self.config,
         )
 
-        result = retriever.retrieve("unknown query", "admissions")
+        result = retriever.retrieve(
+            "unknown query",
+            "admissions",
+        )
 
         self.assertEqual(
             result["retrieval"]["strategy"],
             "initial_retrieval_fallback",
         )
-        self.assertEqual(result["retrieval"]["final_result_count"], 2)
+        self.assertEqual(
+            result["retrieval"]["final_result_count"],
+            2,
+        )
         self.assertFalse(result["retrieval"]["query_rewritten"])
 
     def test_duplicate_results_are_removed_after_retrieval(self):
@@ -232,11 +260,104 @@ class TestAdaptiveRetriever(unittest.TestCase):
             self.config,
         )
 
-        result = retriever.retrieve("admission process", "admissions")
+        result = retriever.retrieve(
+            "admission process",
+            "admissions",
+        )
 
         texts = [chunk["text"] for chunk in result["chunks"]]
 
         self.assertEqual(len(texts), len(set(texts)))
+
+    # NEW TEST 1: Initial Pinecone failure
+    def test_initial_pinecone_failure(self):
+        self.index.query.side_effect = Exception(
+            "Pinecone connection unavailable"
+        )
+
+        retriever = AdaptiveRetriever(
+            self.index,
+            self.embed,
+            self.rewrite,
+            self.config,
+        )
+
+        result = retriever.retrieve(
+            "admission process",
+            "admissions",
+        )
+
+        self.assertEqual(result["chunks"], [])
+        self.assertEqual(
+            result["retrieval"]["strategy"],
+            "retrieval_unavailable",
+        )
+        self.assertEqual(
+            result["retrieval"]["retrieval_quality"],
+            "unavailable",
+        )
+        self.assertFalse(result["retrieval"]["query_rewritten"])
+
+        self.rewrite.assert_not_called()
+        self.assertEqual(self.index.query.call_count, 1)
+
+    # NEW TEST 2: Expanded retrieval does not improve results
+    def test_expanded_retrieval_no_improvement(self):
+        self.index.query.side_effect = [
+            self.set_matches([
+                make_chunk(
+                    "admission process requirements",
+                    0.40,
+                ),
+                make_chunk(
+                    "student admission eligibility",
+                    0.30,
+                ),
+            ]),
+            self.set_matches([
+                make_chunk(
+                    "unrelated expanded content",
+                    0.35,
+                ),
+                make_chunk(
+                    "other unrelated information",
+                    0.20,
+                ),
+            ]),
+        ]
+
+        retriever = AdaptiveRetriever(
+            self.index,
+            self.embed,
+            self.rewrite,
+            self.config,
+        )
+
+        result = retriever.retrieve(
+            "admission process",
+            "admissions",
+        )
+
+        self.assertEqual(
+            result["retrieval"]["strategy"],
+            "adaptive_retrieval",
+        )
+
+        self.assertTrue(
+            result["retrieval"]["query_rewritten"]
+        )
+
+        self.assertFalse(
+            result["retrieval"]["expanded_retrieval_improved"]
+        )
+
+        # Initial relevant results should remain available.
+        self.assertIn(
+            "admission process requirements",
+            [chunk["text"] for chunk in result["chunks"]],
+        )
+
+        self.assertEqual(self.index.query.call_count, 2)
 
 
 if __name__ == "__main__":
